@@ -9,19 +9,13 @@
 <body>
 <div class="wrapper">
     <div class="login-wrap">
+        <form action="<%= baseurl() %>login/auth" method="POST">
         <div class="fixMiddle loginBoxsize">
-            <div class="headLogin">
-                <!-- <img src="<%= baseurl() %>images/kadence_icon.png" alt="kadence"> -->
-            </div>
             <div class="bodyLogin">
                 <table>
                     <tr>
                         <td>
-                            <h1>Upload images</h1>
-                            <form action="/upload" method="POST" enctype="multipart/form-data">
-                                <input type="file" name="avatar">
-                                <input type="submit" value="Upload">
-                            </form>
+                            <p class="size-std"><%= text %> </p>
                         </td>
                     </tr>
                 </table>
@@ -30,6 +24,7 @@
                 <p class="size-std" style="position: absolute; bottom: 10px; left: 0; right: 0; height: 20px;">&copy;Copyright by Kadence Indonesia All right reserved</p>
             </div>
         </div>
+        </form>
     </div>
 </div>
 </body>

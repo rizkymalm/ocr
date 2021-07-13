@@ -3,7 +3,11 @@ const app = pkg()
 import fs from "fs"
 import multer from 'multer'
 import Tesseract from 'tesseract.js';
+import dotenv from 'dotenv';
 
+dotenv.config()
+
+app.use(pkg.static("public"));
 
 const storage = multer.diskStorage({
     destination: (req,res, cb) => {
@@ -13,6 +17,10 @@ const storage = multer.diskStorage({
         cb(null, file.originalname)
     }
 })
+global.baseurl = function(){
+	var url = process.env.BASE_URI+":"+process.env.PORT+"/";
+    return url;
+}
 const upload = multer({storage: storage}).single('avatar');
 app.set('view engine', "ejs")
 app.get("/", (req,res) => {
@@ -20,19 +28,25 @@ app.get("/", (req,res) => {
 })
 app.post("/upload", (req,res) => {
     upload(req,res, err => {
-        fs.readFile(`./uploads/${req.file.originalname}`, (err,data) => {
-            if(err) return console.log("error message", err);
-            Tesseract
-            .recognize(data, "eng", {tessjs_create_pdf: '1'})
-            .then(({ data: { text } }) => {
-                res.send(text);
+        console.log(req.file.size)
+        // 150000
+        if(req.file.size >= 1500000){
+            res.send("file too large")
+        }else{
+            fs.readFile(`./uploads/${req.file.originalname}`, (err,data) => {
+                if(err) return console.log("error message", err);
+                Tesseract
+                .recognize(data, "eng", {logger: e => console.log(e)})
+                .then(({ data: { text } }) => {
+                    res.render("result",{
+                        text: text
+                    });
+                })
             })
-        })
+        }
     })
 })
 
-const port = 5001
-
-app.listen(port, (req,res) => {
+app.listen(process.env.PORT, (req,res) => {
     console.log("running")
 })
