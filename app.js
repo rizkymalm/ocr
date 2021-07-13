@@ -38,8 +38,10 @@ app.post("/upload", (req,res) => {
                 Tesseract
                 .recognize(data, "eng", {logger: e => console.log(e)})
                 .then(({ data: { text } }) => {
+                    var splittext = text.split(" ")
                     res.render("result",{
-                        text: text
+                        text: text,
+                        nik: splittext[splittext.indexOf("nik") + 2]
                     });
                 })
             })
